@@ -1,1 +1,79 @@
+#program 1
+#backup a directory 
+
+#!/bin/bash
+
+SOURCE=$1
+BACKUP_DIR="$HOME/backups"
+
+# Create backup folder if not exist
+mkdir -p "$BACKUP_DIR"
+
+# Create timestamp
+TIME=$(date +"%Y-%m-%d_%H-%M-%S")
+
+# Backup filename
+BACKUP_FILE="$BACKUP_DIR/backup_$TIME.tar.gz"
+
+# Create backup
+tar -czf "$BACKUP_FILE" "$SOURCE"
+
+echo "Backup created at: $BACKUP_FILE"
+
+
+#program2
+#CPU/Memory monitoring
+#!/bin/bash
+
+echo "CPU/Memory monitoring"
+echo 
+
+# CPU Usage
+CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+echo "CPU Usage: $CPU_USAGE %"
+
+# Memory Usage
+MEM_USED=$(free -m | awk '/Mem:/ {print $3}')
+MEM_TOTAL=$(free -m | awk '/Mem:/ {print $2}')
+MEM_PERCENT=$(( 100 * MEM_USED / MEM_TOTAL ))
+
+echo "Memory Usage: $MEM_PERCENT % ($MEM_USED MB of $MEM_TOTAL MB)"
+echo
+
+# Top 5 CPU-consuming processes
+echo "Top 5 CPU-heavy processes:"
+ps aux --sort=-%cpu | head -6
+
+
+#program3
+#Automated DOwnlaod task
+
+#!/bin/bash
+
+# Check if URL is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <file_url>"
+    exit 1
+fi
+
+URL=$1
+DOWNLOAD_DIR="$HOME/downloads"
+
+# Create download folder if it doesn't exist
+mkdir -p "$DOWNLOAD_DIR"
+
+# Timestamp for unique filename
+TIME=$(date +"%Y-%m-%d_%H-%M-%S")
+
+# Extract filename from URL
+FILENAME=$(basename "$URL")
+
+# Final output file (with timestamp)
+OUTPUT="$DOWNLOAD_DIR/${TIME}_$FILENAME"
+
+# Download using wget
+wget -O "$OUTPUT" "$URL"
+
+echo "File downloaded successfully:"
+echo "$OUTPUT"
 
